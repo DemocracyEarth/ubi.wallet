@@ -21,8 +21,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 
-// Add the PersistentDemoNotice component to the contracts page
-import PersistentDemoNotice from "@/components/persistent-demo-notice"
+// Remove the PersistentDemoNotice from the contracts page since we now have the global banner
 
 // Example contracts data
 const exampleContracts = [
@@ -160,8 +159,6 @@ export default function ContractsPage() {
 
   return (
     <main className="flex flex-col items-center p-4 max-w-md mx-auto w-full flex-1">
-      {/* Add this after the opening <main> tag */}
-      <PersistentDemoNotice className="w-full mb-4" />
       <h1 className="text-2xl font-bold mb-4 self-start">Smart Contracts</h1>
 
       <Tabs

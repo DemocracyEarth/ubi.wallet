@@ -7,7 +7,6 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import Link from "next/link"
-import PersistentDemoNotice from "@/components/persistent-demo-notice"
 
 export default function NodePage() {
   const [lightNodeEnabled, setLightNodeEnabled] = useState(true)
@@ -16,7 +15,6 @@ export default function NodePage() {
 
   return (
     <main className="flex flex-col items-center p-4 max-w-md mx-auto w-full flex-1">
-      <PersistentDemoNotice className="w-full mb-4" />
       <h1 className="text-2xl font-bold mb-4 self-start">Node Settings</h1>
 
       <Card className="w-full p-5 bg-gray-900/80 mb-4">

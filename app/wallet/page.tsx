@@ -10,7 +10,6 @@ import { formatDistanceToNow } from "date-fns"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import Link from "next/link"
-import PersistentDemoNotice from "@/components/persistent-demo-notice"
 
 // Mock transaction data
 const mockTransactions = [
@@ -102,7 +101,6 @@ export default function WalletPage() {
 
   return (
     <main className="flex flex-col items-center p-4 max-w-md mx-auto w-full flex-1">
-      <PersistentDemoNotice className="w-full mb-4" />
       <h1 className="text-2xl font-bold mb-4 self-start">Wallet</h1>
 
       <Card className="w-full mb-6 rounded-xl p-6 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white">

@@ -49,9 +49,6 @@ import {
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 
-// Add the PersistentDemoNotice component to the feed page
-import PersistentDemoNotice from "@/components/persistent-demo-notice"
-
 export default function FeedPage() {
   const [newPost, setNewPost] = useState("")
   const [tipAmount, setTipAmount] = useState<Record<string, string>>({})
@@ -401,7 +398,6 @@ export default function FeedPage() {
 
   return (
     <main className="flex flex-col items-center p-4 max-w-md mx-auto w-full flex-1">
-      <PersistentDemoNotice className="w-full mb-4" />
       <h1 className="text-2xl font-bold mb-4 self-start">Social Feed</h1>
 
       {!isVerified && (

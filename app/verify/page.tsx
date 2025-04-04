@@ -10,7 +10,6 @@ import Link from "next/link"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import PersistentDemoNotice from "@/components/persistent-demo-notice"
 
 export default function VerifyPage() {
   const router = useRouter()
@@ -95,7 +94,6 @@ export default function VerifyPage() {
 
   return (
     <main className="flex flex-col items-center p-4 max-w-md mx-auto w-full flex-1">
-      <PersistentDemoNotice className="w-full mb-4" />
       <h1 className="text-2xl font-bold mb-4 self-start">Verification</h1>
 
       <Card className="w-full p-5 bg-gray-900/80 mb-6">

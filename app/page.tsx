@@ -10,9 +10,6 @@ import { Wallet, FileText, Users, Settings, Coins, ArrowRight, AlertCircle } fro
 import { formatDistanceToNow } from "date-fns"
 import { Button } from "@/components/ui/button"
 
-// Add the PersistentDemoNotice component to the home page
-import PersistentDemoNotice from "@/components/persistent-demo-notice"
-
 export default function Home() {
   const { initializeWallet, balance } = useWalletStore()
   const { isVerified } = useVerificationStore()
@@ -31,9 +28,6 @@ export default function Home() {
 
   return (
     <main className="flex flex-col items-center p-4 max-w-md mx-auto w-full flex-1">
-      {/* Add this after the opening <main> tag */}
-      <PersistentDemoNotice className="w-full mb-4" />
-
       {/* Key Metric Card */}
       <Card className="w-full mb-4 p-5 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl">
         <div className="flex justify-between items-start mb-1">

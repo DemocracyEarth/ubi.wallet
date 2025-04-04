@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation"
 import Link from "next/link"
-import { Wallet, FileText, Users, Coins, Shield, AlertTriangle } from "lucide-react"
+import { Wallet, FileText, Users, Coins, Shield } from "lucide-react"
 import Image from "next/image"
 import { useVerificationStore } from "@/lib/stores/verification-store"
 
@@ -15,14 +15,8 @@ export default function NavBar() {
   }
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-gray-900/90 backdrop-blur-md border-t border-gray-800 z-10 relative">
-      <div className="absolute top-0 left-0 right-0 flex justify-center -translate-y-full">
-        <div className="bg-yellow-600 text-white text-xs px-2 py-0.5 rounded-t-md flex items-center gap-1">
-          <AlertTriangle className="h-3 w-3" />
-          <span>Demo Only</span>
-        </div>
-      </div>
-      <div className="max-w-md mx-auto flex justify-around py-4">
+    <div className="fixed bottom-0 left-0 right-0 bg-gray-900/90 backdrop-blur-md border-t border-gray-800 z-40">
+      <div className="max-w-md mx-auto flex justify-around py-3">
         <Link
           href="/"
           className={`p-2 rounded-full flex flex-col items-center ${isActive("/") ? "text-white" : "text-gray-400"}`}

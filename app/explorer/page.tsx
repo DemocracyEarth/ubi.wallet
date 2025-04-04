@@ -11,9 +11,6 @@ import { Search, Clock, Layers, FileText, ArrowUpRight } from "lucide-react"
 import { formatDistanceToNow } from "date-fns"
 import { truncateAddress } from "@/lib/utils"
 
-// Add the PersistentDemoNotice component to the explorer page
-import PersistentDemoNotice from "@/components/persistent-demo-notice"
-
 // Mock blockchain data
 const mockBlocks = [
   {
@@ -124,7 +121,6 @@ export default function ExplorerPage() {
 
   return (
     <main className="flex flex-col items-center p-4 max-w-md mx-auto w-full flex-1">
-      <PersistentDemoNotice className="w-full mb-4" />
       <h1 className="text-2xl font-bold mb-4 self-start">Block Explorer</h1>
 
       <Card className="w-full p-4 bg-gray-900/80 mb-4">

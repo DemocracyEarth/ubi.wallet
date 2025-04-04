@@ -23,9 +23,9 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} bg-black text-white antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} disableTransitionOnChange>
-          <DemoWarningBanner />
-          <div className="flex min-h-screen flex-col pb-20">
-            {children}
+          <div className="flex min-h-screen flex-col">
+            <DemoWarningBanner />
+            <div className="flex-1 pb-20">{children}</div>
             <NavBar />
           </div>
         </ThemeProvider>

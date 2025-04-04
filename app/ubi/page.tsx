@@ -9,9 +9,6 @@ import { useVerificationStore } from "@/lib/stores/verification-store"
 import { Shield, AlertCircle } from "lucide-react"
 import Link from "next/link"
 
-// Add the PersistentDemoNotice component to the UBI page
-import PersistentDemoNotice from "@/components/persistent-demo-notice"
-
 // Initial mock claim history
 const initialClaimHistory = [
   {
@@ -68,9 +65,6 @@ export default function UbiPage() {
 
   return (
     <main className="flex flex-col items-center p-4 max-w-md mx-auto w-full flex-1">
-      {/* Add this after the opening <main> tag */}
-      <PersistentDemoNotice className="w-full mb-4" />
-
       <h1 className="text-2xl font-bold mb-4 self-start">Universal Basic Income</h1>
 
       {!isVerified ? (
