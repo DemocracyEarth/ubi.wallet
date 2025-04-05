@@ -3,8 +3,8 @@ import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
-import NavBar from "@/components/nav-bar"
 import DemoWarningBanner from "@/components/demo-warning-banner"
+import Navigation from "@/components/navigation"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -23,11 +23,9 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} bg-black text-white antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} disableTransitionOnChange>
-          <div className="flex min-h-screen flex-col">
-            <DemoWarningBanner />
-            <div className="flex-1 pb-20">{children}</div>
-            <NavBar />
-          </div>
+          <DemoWarningBanner />
+          {children}
+          <Navigation />
         </ThemeProvider>
       </body>
     </html>

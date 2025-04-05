@@ -2,13 +2,11 @@
 
 import { usePathname } from "next/navigation"
 import Link from "next/link"
-import { Wallet, FileText, Users, Coins, Shield } from "lucide-react"
+import { Wallet, FileText, Users, Settings } from "lucide-react"
 import Image from "next/image"
-import { useVerificationStore } from "@/lib/stores/verification-store"
 
 export default function NavBar() {
   const pathname = usePathname()
-  const { isVerified } = useVerificationStore()
 
   const isActive = (path: string) => {
     return pathname === path
@@ -42,19 +40,11 @@ export default function NavBar() {
         </Link>
 
         <Link
-          href="/contracts"
-          className={`p-2 rounded-full flex flex-col items-center ${isActive("/contracts") ? "text-white" : "text-gray-400"}`}
+          href="/ai-services"
+          className={`p-2 rounded-full flex flex-col items-center ${isActive("/ai-services") ? "text-white" : "text-gray-400"}`}
         >
           <FileText className="w-6 h-6" />
-          <span className="text-xs mt-1">Contracts</span>
-        </Link>
-
-        <Link
-          href="/ubi"
-          className={`p-2 rounded-full flex flex-col items-center ${isActive("/ubi") ? "text-green-400" : "text-gray-400"}`}
-        >
-          <Coins className="w-6 h-6" />
-          <span className="text-xs mt-1">UBI</span>
+          <span className="text-xs mt-1">AI Services</span>
         </Link>
 
         <Link
@@ -66,11 +56,11 @@ export default function NavBar() {
         </Link>
 
         <Link
-          href="/verify"
-          className={`p-2 rounded-full flex flex-col items-center ${isActive("/verify") ? "text-white" : isVerified ? "text-green-400" : "text-yellow-400"}`}
+          href="/node"
+          className={`p-2 rounded-full flex flex-col items-center ${isActive("/node") ? "text-white" : "text-gray-400"}`}
         >
-          <Shield className="w-6 h-6" />
-          <span className="text-xs mt-1">Verify</span>
+          <Settings className="w-6 h-6" />
+          <span className="text-xs mt-1">Node</span>
         </Link>
       </div>
     </div>

@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Search, Clock, Layers, FileText, ArrowUpRight } from "lucide-react"
 import { formatDistanceToNow } from "date-fns"
 import { truncateAddress } from "@/lib/utils"
+import DesktopLayout from "@/components/desktop-layout"
 
 // Mock blockchain data
 const mockBlocks = [
@@ -120,155 +121,157 @@ export default function ExplorerPage() {
   }
 
   return (
-    <main className="flex flex-col items-center p-4 max-w-md mx-auto w-full flex-1">
-      <h1 className="text-2xl font-bold mb-4 self-start">Block Explorer</h1>
+    <DesktopLayout>
+      <main className="flex flex-col items-center p-4 max-w-md mx-auto w-full flex-1">
+        <h1 className="text-2xl font-bold mb-4 self-start">Block Explorer</h1>
 
-      <Card className="w-full p-4 bg-gray-900/80 mb-4">
-        <form onSubmit={handleSearch} className="flex gap-2">
-          <Input
-            placeholder="Search by address, tx hash, or block"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="bg-gray-800/50 border-gray-700"
-          />
-          <Button type="submit" className="bg-gradient-to-r from-green-600 to-emerald-600">
-            <Search size={18} />
-          </Button>
-        </form>
-      </Card>
-
-      {searchResults !== null && (
         <Card className="w-full p-4 bg-gray-900/80 mb-4">
-          <h2 className="text-lg font-medium mb-3">Search Results</h2>
-          {searchResults.length === 0 ? (
-            <p className="text-gray-400 text-sm">No results found for "{searchQuery}"</p>
-          ) : (
-            <div className="space-y-3">
-              {searchResults.map((result, index) => (
-                <div key={index} className="bg-gray-800 p-3 rounded-lg text-sm">
-                  {"number" in result ? (
-                    // Block result
-                    <>
-                      <div className="flex justify-between mb-1">
-                        <span className="text-gray-400">Block:</span>
-                        <span>#{result.number}</span>
-                      </div>
-                      <div className="flex justify-between mb-1">
-                        <span className="text-gray-400">Time:</span>
-                        <span>{formatDistanceToNow(result.timestamp, { addSuffix: true })}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-400">Transactions:</span>
-                        <span>{result.transactions}</span>
-                      </div>
-                    </>
-                  ) : (
-                    // Transaction result
-                    <>
-                      <div className="flex justify-between mb-1">
-                        <span className="text-gray-400">Tx Hash:</span>
-                        <span className="truncate max-w-[180px]">{result.hash}</span>
-                      </div>
-                      <div className="flex justify-between mb-1">
-                        <span className="text-gray-400">From:</span>
-                        <span>{truncateAddress(result.from)}</span>
-                      </div>
-                      <div className="flex justify-between mb-1">
-                        <span className="text-gray-400">To:</span>
-                        <span>{truncateAddress(result.to)}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-400">Value:</span>
-                        <span>{result.value}</span>
-                      </div>
-                    </>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
+          <form onSubmit={handleSearch} className="flex gap-2">
+            <Input
+              placeholder="Search by address, tx hash, or block"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="bg-gray-800/50 border-gray-700"
+            />
+            <Button type="submit" className="bg-gradient-to-r from-green-600 to-emerald-600">
+              <Search size={18} />
+            </Button>
+          </form>
         </Card>
-      )}
 
-      <Tabs defaultValue="blocks" className="w-full">
-        <TabsList className="grid grid-cols-2 mb-4">
-          <TabsTrigger value="blocks" className="flex items-center gap-2">
-            <Layers className="w-4 h-4" />
-            <span>Latest Blocks</span>
-          </TabsTrigger>
-          <TabsTrigger value="transactions" className="flex items-center gap-2">
-            <FileText className="w-4 h-4" />
-            <span>Transactions</span>
-          </TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="blocks">
-          <div className="space-y-3">
-            {mockBlocks.map((block, index) => (
-              <Card key={index} className="p-4 bg-gray-900/80">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-full bg-purple-500/20 text-purple-400">
-                    <Layers size={20} />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex justify-between">
-                      <div className="font-medium">Block #{block.number}</div>
-                      <div className="text-sm text-gray-400">
-                        {formatDistanceToNow(block.timestamp, { addSuffix: true })}
-                      </div>
-                    </div>
-                    <div className="flex justify-between mt-1 text-sm">
-                      <div className="text-gray-400">{block.transactions} txns</div>
-                      <div className="text-gray-400">{block.size}</div>
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            ))}
-          </div>
-        </TabsContent>
-
-        <TabsContent value="transactions">
-          <div className="space-y-3">
-            {mockTransactions.map((tx, index) => (
-              <Card key={index} className="p-4 bg-gray-900/80">
-                <div className="flex items-center gap-3">
-                  <div
-                    className={`p-2 rounded-full ${
-                      tx.type === "transfer"
-                        ? "bg-blue-500/20 text-blue-400"
-                        : tx.type === "stream_start"
-                          ? "bg-green-500/20 text-green-400"
-                          : "bg-red-500/20 text-red-400"
-                    }`}
-                  >
-                    {tx.type === "transfer" ? (
-                      <ArrowUpRight size={20} />
-                    ) : tx.type === "stream_start" ? (
-                      <Clock size={20} />
+        {searchResults !== null && (
+          <Card className="w-full p-4 bg-gray-900/80 mb-4">
+            <h2 className="text-lg font-medium mb-3">Search Results</h2>
+            {searchResults.length === 0 ? (
+              <p className="text-gray-400 text-sm">No results found for "{searchQuery}"</p>
+            ) : (
+              <div className="space-y-3">
+                {searchResults.map((result, index) => (
+                  <div key={index} className="bg-gray-800 p-3 rounded-lg text-sm">
+                    {"number" in result ? (
+                      // Block result
+                      <>
+                        <div className="flex justify-between mb-1">
+                          <span className="text-gray-400">Block:</span>
+                          <span>#{result.number}</span>
+                        </div>
+                        <div className="flex justify-between mb-1">
+                          <span className="text-gray-400">Time:</span>
+                          <span>{formatDistanceToNow(result.timestamp, { addSuffix: true })}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-400">Transactions:</span>
+                          <span>{result.transactions}</span>
+                        </div>
+                      </>
                     ) : (
-                      <Clock size={20} />
+                      // Transaction result
+                      <>
+                        <div className="flex justify-between mb-1">
+                          <span className="text-gray-400">Tx Hash:</span>
+                          <span className="truncate max-w-[180px]">{result.hash}</span>
+                        </div>
+                        <div className="flex justify-between mb-1">
+                          <span className="text-gray-400">From:</span>
+                          <span>{truncateAddress(result.from)}</span>
+                        </div>
+                        <div className="flex justify-between mb-1">
+                          <span className="text-gray-400">To:</span>
+                          <span>{truncateAddress(result.to)}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-400">Value:</span>
+                          <span>{result.value}</span>
+                        </div>
+                      </>
                     )}
                   </div>
-                  <div className="flex-1">
-                    <div className="flex justify-between">
-                      <div className="font-medium capitalize">{tx.type.replace("_", " ")}</div>
-                      <div className="text-sm text-gray-400">
-                        {formatDistanceToNow(tx.timestamp, { addSuffix: true })}
+                ))}
+              </div>
+            )}
+          </Card>
+        )}
+
+        <Tabs defaultValue="blocks" className="w-full">
+          <TabsList className="grid grid-cols-2 mb-4">
+            <TabsTrigger value="blocks" className="flex items-center gap-2">
+              <Layers className="w-4 h-4" />
+              <span>Latest Blocks</span>
+            </TabsTrigger>
+            <TabsTrigger value="transactions" className="flex items-center gap-2">
+              <FileText className="w-4 h-4" />
+              <span>Transactions</span>
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="blocks">
+            <div className="space-y-3">
+              {mockBlocks.map((block, index) => (
+                <Card key={index} className="p-4 bg-gray-900/80">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-full bg-purple-500/20 text-purple-400">
+                      <Layers size={20} />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex justify-between">
+                        <div className="font-medium">Block #{block.number}</div>
+                        <div className="text-sm text-gray-400">
+                          {formatDistanceToNow(block.timestamp, { addSuffix: true })}
+                        </div>
+                      </div>
+                      <div className="flex justify-between mt-1 text-sm">
+                        <div className="text-gray-400">{block.transactions} txns</div>
+                        <div className="text-gray-400">{block.size}</div>
                       </div>
                     </div>
-                    <div className="flex justify-between mt-1 text-sm">
-                      <div className="text-gray-400">From: {truncateAddress(tx.from)}</div>
-                      <div className="text-gray-400">{tx.value}</div>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="transactions">
+            <div className="space-y-3">
+              {mockTransactions.map((tx, index) => (
+                <Card key={index} className="p-4 bg-gray-900/80">
+                  <div className="flex items-center gap-3">
+                    <div
+                      className={`p-2 rounded-full ${
+                        tx.type === "transfer"
+                          ? "bg-blue-500/20 text-blue-400"
+                          : tx.type === "stream_start"
+                            ? "bg-green-500/20 text-green-400"
+                            : "bg-red-500/20 text-red-400"
+                      }`}
+                    >
+                      {tx.type === "transfer" ? (
+                        <ArrowUpRight size={20} />
+                      ) : tx.type === "stream_start" ? (
+                        <Clock size={20} />
+                      ) : (
+                        <Clock size={20} />
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex justify-between">
+                        <div className="font-medium capitalize">{tx.type.replace("_", " ")}</div>
+                        <div className="text-sm text-gray-400">
+                          {formatDistanceToNow(tx.timestamp, { addSuffix: true })}
+                        </div>
+                      </div>
+                      <div className="flex justify-between mt-1 text-sm">
+                        <div className="text-gray-400">From: {truncateAddress(tx.from)}</div>
+                        <div className="text-gray-400">{tx.value}</div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </Card>
-            ))}
-          </div>
-        </TabsContent>
-      </Tabs>
-    </main>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+        </Tabs>
+      </main>
+    </DesktopLayout>
   )
 }
 
