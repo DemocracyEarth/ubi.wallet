@@ -202,7 +202,7 @@ export default function DesktopLayout({
           className={cn("flex-1 overflow-y-auto", rightPanelVisible && isDesktop ? "mr-[320px]" : "", contentClassName)}
           style={{
             marginRight: rightPanelVisible && isDesktop ? rightPanelWidth : 0,
-            paddingBottom: "80px", // Add padding to bottom for navigation on all devices
+            paddingBottom: "90px", // Reduced padding to create a more balanced layout
           }}
         >
           {/* Toggle right panel button */}
@@ -234,12 +234,7 @@ export default function DesktopLayout({
         )}
 
         {/* Bottom navigation - visible on all devices */}
-        <div
-          className={cn(
-            "fixed bottom-0 left-0 right-0 bg-gray-900/90 backdrop-blur-md border-t border-gray-800 z-40",
-            isDesktop ? "lg:block" : "",
-          )}
-        >
+        <div className="fixed bottom-0 left-0 right-0 bg-gray-900/90 backdrop-blur-md border-t border-gray-800 z-40">
           <div className="max-w-md mx-auto flex justify-around py-3">
             {navItems.map((item) => (
               <Link

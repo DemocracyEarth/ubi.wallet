@@ -1,5 +1,6 @@
 import type React from "react"
-export default function AiServicesLayout({
+
+export default function AIServicesLayout({
   children,
 }: {
   children: React.ReactNode

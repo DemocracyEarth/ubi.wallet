@@ -5,8 +5,10 @@ import type { Contract } from "@/lib/types"
 interface ContractState {
   currentContract: Contract | null
   contracts: Contract[]
-  generateContract: (prompt: string) => void
+  generateContract: (prompt: string) => Promise<void>
   addContract: (contract: Contract) => void
+  removeContract: (contractId: string) => void
+  getContract: (contractId: string) => Contract | undefined
 }
 
 export const useContractStore = create<ContractState>((set, get) => ({
@@ -22,6 +24,14 @@ export const useContractStore = create<ContractState>((set, get) => ({
       contracts: [...state.contracts, contract],
       currentContract: null,
     }))
+  },
+  removeContract: (contractId: string) => {
+    set((state) => ({
+      contracts: state.contracts.filter((contract) => contract.id !== contractId),
+    }))
+  },
+  getContract: (contractId: string) => {
+    return get().contracts.find((contract) => contract.id === contractId)
   },
 }))
 

@@ -60,8 +60,8 @@
     "zod": "^3.24.1",
     "immer": "latest",
     "use-sync-external-store": "latest",
-    "zustand": "latest",
-    "tweetnacl": "latest"
+    "tweetnacl": "latest",
+    "zustand": "latest"
   },
   "devDependencies": {
     "@types/node": "^22",

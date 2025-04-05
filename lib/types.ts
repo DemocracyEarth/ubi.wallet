@@ -9,6 +9,7 @@ export interface Contract {
   description: string
   code: string
   createdAt: Date
+  name?: string
 }
 
 export interface Comment {
@@ -61,5 +62,16 @@ export interface Poll {
   timestamp: Date
   endDate: Date
   status: "active" | "completed" | "canceled"
+}
+
+export interface DeployedContract {
+  id: string
+  contractId: string
+  address: string
+  network: string
+  deployedAt: Date
+  transactionHash: string
+  owner: string
+  verified: boolean
 }
 

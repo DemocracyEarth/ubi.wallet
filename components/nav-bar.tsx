@@ -2,66 +2,67 @@
 
 import { usePathname } from "next/navigation"
 import Link from "next/link"
-import { Wallet, FileText, Users, Settings } from "lucide-react"
-import Image from "next/image"
+import { Home, Wallet, Settings, MessageSquare, Code, Activity } from "lucide-react"
+import { cn } from "@/lib/utils"
 
 export default function NavBar() {
   const pathname = usePathname()
 
-  const isActive = (path: string) => {
-    return pathname === path
-  }
+  const routes = [
+    {
+      href: "/",
+      icon: Home,
+      label: "Home",
+      active: pathname === "/",
+    },
+    {
+      href: "/wallet",
+      icon: Wallet,
+      label: "Wallet",
+      active: pathname === "/wallet",
+    },
+    {
+      href: "/smart-contracts",
+      icon: Code,
+      label: "Contracts",
+      active: pathname === "/smart-contracts",
+    },
+    {
+      href: "/feed",
+      icon: MessageSquare,
+      label: "Feed",
+      active: pathname === "/feed",
+    },
+    {
+      href: "/explorer",
+      icon: Activity,
+      label: "Explorer",
+      active: pathname === "/explorer",
+    },
+    {
+      href: "/node",
+      icon: Settings,
+      label: "Node",
+      active: pathname === "/node",
+    },
+  ]
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-gray-900/90 backdrop-blur-md border-t border-gray-800 z-40">
-      <div className="max-w-md mx-auto flex justify-around py-3">
-        <Link
-          href="/"
-          className={`p-2 rounded-full flex flex-col items-center ${isActive("/") ? "text-white" : "text-gray-400"}`}
-        >
-          <div className="w-6 h-6 flex items-center justify-center">
-            <Image
-              src="/images/ubi-logo-white.svg"
-              alt="Home"
-              width={24}
-              height={24}
-              className={isActive("/") ? "opacity-100" : "opacity-70"}
-            />
-          </div>
-          <span className="text-xs mt-1">Home</span>
-        </Link>
-
-        <Link
-          href="/wallet"
-          className={`p-2 rounded-full flex flex-col items-center ${isActive("/wallet") ? "text-white" : "text-gray-400"}`}
-        >
-          <Wallet className="w-6 h-6" />
-          <span className="text-xs mt-1">Wallet</span>
-        </Link>
-
-        <Link
-          href="/ai-services"
-          className={`p-2 rounded-full flex flex-col items-center ${isActive("/ai-services") ? "text-white" : "text-gray-400"}`}
-        >
-          <FileText className="w-6 h-6" />
-          <span className="text-xs mt-1">AI Services</span>
-        </Link>
-
-        <Link
-          href="/feed"
-          className={`p-2 rounded-full flex flex-col items-center ${isActive("/feed") ? "text-white" : "text-gray-400"}`}
-        >
-          <Users className="w-6 h-6" />
-          <span className="text-xs mt-1">Feed</span>
-        </Link>
-
-        <Link
-          href="/node"
-          className={`p-2 rounded-full flex flex-col items-center ${isActive("/node") ? "text-white" : "text-gray-400"}`}
-        >
-          <Settings className="w-6 h-6" />
-          <span className="text-xs mt-1">Node</span>
-        </Link>
+    <div className="fixed bottom-0 left-0 right-0 z-50 bg-gray-900 border-t border-gray-800">
+      <div className="flex justify-around items-center h-16 px-2 max-w-lg mx-auto">
+        {routes.map((route) => (
+          <Link
+            key={route.href}
+            href={route.href}
+            className={cn(
+              "flex flex-col items-center justify-center w-full h-full text-xs font-medium transition-colors",
+              route.active ? "text-white" : "text-gray-400 hover:text-gray-300",
+            )}
+          >
+            <route.icon className={cn("h-5 w-5 mb-1", route.active ? "text-blue-400" : "")} />
+            <span>{route.label}</span>
+          </Link>
+        ))}
       </div>
     </div>
   )
