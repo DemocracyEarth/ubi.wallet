@@ -74,4 +74,3 @@ export interface DeployedContract {
   owner: string
   verified: boolean
 }
-

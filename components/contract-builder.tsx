@@ -645,4 +645,3 @@ export function ContractBuilder() {
     </div>
   )
 }
-

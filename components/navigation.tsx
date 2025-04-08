@@ -3,15 +3,18 @@
 import { Home, Search, Bell, User } from "lucide-react"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
+import { useMediaQuery } from "@/hooks/use-media-query"
 
 export default function Navigation() {
   const pathname = usePathname()
+  const isDesktop = useMediaQuery("(min-width: 1024px)")
 
   // Check if the current page is using DesktopLayout
   // These pages should not show the bottom navigation twice
-  const usingDesktopLayout = ["/verify", "/explorer", "/feed", "/node", "/wallet", "/ai-services"].includes(pathname)
+  const usingDesktopLayout = ["/verify", "/explorer", "/feed", "/node", "/wallet", "/contracts"].includes(pathname)
 
-  if (usingDesktopLayout) {
+  // Don't show navigation on desktop or when using DesktopLayout
+  if (isDesktop || usingDesktopLayout) {
     return null
   }
 
@@ -34,4 +37,3 @@ export default function Navigation() {
     </div>
   )
 }
-

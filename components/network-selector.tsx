@@ -118,4 +118,3 @@ export function NetworkSelector({ compact = false }: NetworkSelectorProps) {
     </div>
   )
 }
-

@@ -15,7 +15,6 @@ import { useMediaQuery } from "@/hooks/use-media-query"
 import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { useResponsiveGrid } from "@/hooks/use-responsive-grid"
 
 // Mock blockchain data
 const mockBlocks = [
@@ -174,7 +173,7 @@ const BlockItem = React.memo(
     onToggleExpand: () => void
   }) => {
     return (
-      <Card className="p-4 bg-gray-900/80 transition-all duration-200 hover:bg-gray-900">
+      <Card className="p-4 bg-gray-900/80 transition-all duration-200 hover:bg-gray-900 w-full">
         <div
           className="flex items-center gap-3 cursor-pointer"
           onClick={onToggleExpand}
@@ -290,7 +289,7 @@ const TransactionItem = React.memo(
     }
 
     return (
-      <Card className="p-4 bg-gray-900/80 transition-all duration-200 hover:bg-gray-900">
+      <Card className="p-4 bg-gray-900/80 transition-all duration-200 hover:bg-gray-900 w-full">
         <div
           className="flex items-center gap-3 cursor-pointer"
           onClick={onToggleExpand}
@@ -371,27 +370,32 @@ export default function ExplorerPage() {
   const [expandedBlock, setExpandedBlock] = useState<number | null>(null)
   const [expandedTx, setExpandedTx] = useState<string | null>(null)
 
-  // Use our custom hook for responsive grid
-  const { containerRef, columns } = useResponsiveGrid({
-    small: 800,
-    medium: 1200,
-  })
-
+  // Media queries for responsive design
   const isDesktop = useMediaQuery("(min-width: 1024px)")
-  const isTablet = useMediaQuery("(min-width: 768px)")
+  const isTablet = useMediaQuery("(min-width: 768px) and (max-width: 1023px)")
+  const isMobile = useMediaQuery("(max-width: 767px)")
   const isLargeDesktop = useMediaQuery("(min-width: 1536px)")
+
+  // Determine optimal column count based on screen size
+  const getOptimalColumnCount = () => {
+    if (isLargeDesktop) return 3;
+    if (isDesktop) return 2;
+    if (isTablet) return 1; // Force single column on tablet for full width
+    return 1;
+  };
 
   // Memoize grid class to prevent unnecessary re-renders
   const gridClass = useMemo(() => {
+    const columns = getOptimalColumnCount();
     return cn(
-      "grid gap-3",
+      "grid gap-3 w-full",
       columns === 1
         ? "grid-cols-1"
         : columns === 2
-          ? "grid-cols-1 md:grid-cols-2"
-          : "grid-cols-1 md:grid-cols-2 xl:grid-cols-3",
+          ? "grid-cols-1 lg:grid-cols-2"
+          : "grid-cols-1 lg:grid-cols-2 xl:grid-cols-3",
     )
-  }, [columns])
+  }, [isDesktop, isTablet, isLargeDesktop])
 
   // Handle search with useCallback to prevent unnecessary re-renders
   const handleSearch = useCallback(
@@ -475,13 +479,13 @@ export default function ExplorerPage() {
 
   return (
     <DesktopLayout sidebar={isDesktop ? sidebarContent : undefined}>
-      <div ref={containerRef} className={cn("flex flex-col w-full", isDesktop ? "px-6" : "px-4", "mx-auto")}>
-        <h1 className="text-2xl font-bold mb-4 self-start">Block Explorer</h1>
+      <div className={cn("flex flex-col w-full", isTablet ? "px-0" : isDesktop ? "px-4" : "px-2")}>
+        <h1 className="text-2xl font-bold mb-4 self-start px-2">Block Explorer</h1>
 
         {/* Feature highlights - only visible on desktop/tablet */}
         {(isDesktop || isTablet) && (
-          <div className="mb-6">
-            <Card className="p-4 bg-gradient-to-r from-gray-800 to-gray-900 border-gray-700">
+          <div className={cn("mb-6", isTablet ? "px-2" : "")}>
+            <Card className="p-4 bg-gradient-to-r from-gray-800 to-gray-900 border-gray-700 w-full">
               <div className="flex items-start gap-3">
                 <Info className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" aria-hidden="true" />
                 <div>
@@ -504,116 +508,122 @@ export default function ExplorerPage() {
         )}
 
         {/* Search section */}
-        <Card className={cn("w-full p-4 bg-gray-900/80 mb-6", isDesktop ? "max-w-none" : "max-w-md mx-auto")}>
-          <form onSubmit={handleSearch} className="flex gap-2">
-            <Input
-              placeholder="Search by address, tx hash, or block"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="bg-gray-800/50 border-gray-700"
-              aria-label="Search input"
-            />
-            <Button type="submit" className="bg-gradient-to-r from-green-600 to-emerald-600" aria-label="Search">
-              <Search size={18} aria-hidden="true" />
-            </Button>
-          </form>
-        </Card>
+        <div className={cn("w-full mb-6", isTablet ? "px-2" : "")}>
+          <Card className="p-4 bg-gray-900/80 w-full">
+            <form onSubmit={handleSearch} className="flex gap-2">
+              <Input
+                placeholder="Search by address, tx hash, or block"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="bg-gray-800/50 border-gray-700"
+                aria-label="Search input"
+              />
+              <Button type="submit" className="bg-gradient-to-r from-green-600 to-emerald-600" aria-label="Search">
+                <Search size={18} aria-hidden="true" />
+              </Button>
+            </form>
+          </Card>
+        </div>
 
         {/* Search results */}
         {searchResults !== null && (
-          <Card className={cn("w-full p-4 bg-gray-900/80 mb-6", isDesktop ? "max-w-none" : "max-w-md mx-auto")}>
-            <h2 className="text-lg font-medium mb-3">Search Results</h2>
-            {searchResults.length === 0 ? (
-              <p className="text-gray-400 text-sm">No results found for "{searchQuery}"</p>
-            ) : (
-              <div className={gridClass}>
-                {searchResults.map((result, index) => (
-                  <div key={index} className="bg-gray-800 p-3 rounded-lg text-sm">
-                    {"number" in result ? (
-                      // Block result
-                      <>
-                        <div className="flex justify-between mb-1">
-                          <span className="text-gray-400">Block:</span>
-                          <span>#{result.number}</span>
-                        </div>
-                        <div className="flex justify-between mb-1">
-                          <span className="text-gray-400">Time:</span>
-                          <span>{formatDistanceToNow(result.timestamp, { addSuffix: true })}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-400">Transactions:</span>
-                          <span>{result.transactions}</span>
-                        </div>
-                      </>
-                    ) : (
-                      // Transaction result
-                      <>
-                        <div className="flex justify-between mb-1">
-                          <span className="text-gray-400">Tx Hash:</span>
-                          <span className="truncate max-w-[180px]">{result.hash}</span>
-                        </div>
-                        <div className="flex justify-between mb-1">
-                          <span className="text-gray-400">From:</span>
-                          <span>{truncateAddress(result.from)}</span>
-                        </div>
-                        <div className="flex justify-between mb-1">
-                          <span className="text-gray-400">To:</span>
-                          <span>{truncateAddress(result.to)}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-400">Value:</span>
-                          <span>{result.value}</span>
-                        </div>
-                      </>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
-          </Card>
+          <div className={cn("w-full mb-6", isTablet ? "px-2" : "")}>
+            <Card className="p-4 bg-gray-900/80 w-full">
+              <h2 className="text-lg font-medium mb-3">Search Results</h2>
+              {searchResults.length === 0 ? (
+                <p className="text-gray-400 text-sm">No results found for "{searchQuery}"</p>
+              ) : (
+                <div className={gridClass}>
+                  {searchResults.map((result, index) => (
+                    <div key={index} className="bg-gray-800 p-3 rounded-lg text-sm w-full">
+                      {"number" in result ? (
+                        // Block result
+                        <>
+                          <div className="flex justify-between mb-1">
+                            <span className="text-gray-400">Block:</span>
+                            <span>#{result.number}</span>
+                          </div>
+                          <div className="flex justify-between mb-1">
+                            <span className="text-gray-400">Time:</span>
+                            <span>{formatDistanceToNow(result.timestamp, { addSuffix: true })}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-gray-400">Transactions:</span>
+                            <span>{result.transactions}</span>
+                          </div>
+                        </>
+                      ) : (
+                        // Transaction result
+                        <>
+                          <div className="flex justify-between mb-1">
+                            <span className="text-gray-400">Tx Hash:</span>
+                            <span className="truncate max-w-[180px]">{result.hash}</span>
+                          </div>
+                          <div className="flex justify-between mb-1">
+                            <span className="text-gray-400">From:</span>
+                            <span>{truncateAddress(result.from)}</span>
+                          </div>
+                          <div className="flex justify-between mb-1">
+                            <span className="text-gray-400">To:</span>
+                            <span>{truncateAddress(result.to)}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-gray-400">Value:</span>
+                            <span>{result.value}</span>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </Card>
+          </div>
         )}
 
         {/* Main content tabs */}
-        <Tabs defaultValue="blocks" className={cn("w-full", isDesktop ? "max-w-none" : "max-w-md mx-auto")}>
-          <TabsList className={cn("mb-4", isDesktop ? "w-auto" : "grid grid-cols-2 w-full")}>
-            <TabsTrigger value="blocks" className="flex items-center gap-2">
-              <Layers className="w-4 h-4" aria-hidden="true" />
-              <span>Latest Blocks</span>
-            </TabsTrigger>
-            <TabsTrigger value="transactions" className="flex items-center gap-2">
-              <FileText className="w-4 h-4" aria-hidden="true" />
-              <span>Transactions</span>
-            </TabsTrigger>
-          </TabsList>
+        <div className={cn("w-full", isTablet ? "px-2" : "")}>
+          <Tabs defaultValue="blocks" className="w-full">
+            <TabsList className={cn("mb-4", isDesktop ? "w-auto" : "grid grid-cols-2 w-full")}>
+              <TabsTrigger value="blocks" className="flex items-center gap-2">
+                <Layers className="w-4 h-4" aria-hidden="true" />
+                <span>Latest Blocks</span>
+              </TabsTrigger>
+              <TabsTrigger value="transactions" className="flex items-center gap-2">
+                <FileText className="w-4 h-4" aria-hidden="true" />
+                <span>Transactions</span>
+              </TabsTrigger>
+            </TabsList>
 
-          {/* Blocks tab */}
-          <TabsContent value="blocks">
-            <div className={gridClass}>
-              {mockBlocks.map((block) => (
-                <BlockItem
-                  key={block.number}
-                  block={block}
-                  isExpanded={expandedBlock === block.number}
-                  onToggleExpand={() => toggleBlockExpansion(block.number)}
-                />
-              ))}
-            </div>
-          </TabsContent>
+            {/* Blocks tab */}
+            <TabsContent value="blocks" className="w-full">
+              <div className={gridClass}>
+                {mockBlocks.map((block) => (
+                  <BlockItem
+                    key={block.number}
+                    block={block}
+                    isExpanded={expandedBlock === block.number}
+                    onToggleExpand={() => toggleBlockExpansion(block.number)}
+                  />
+                ))}
+              </div>
+            </TabsContent>
 
-          {/* Transactions tab */}
-          <TabsContent value="transactions">
-            <div className={gridClass}>
-              {mockTransactions.map((tx) => (
-                <TransactionItem
-                  key={tx.hash}
-                  tx={tx}
-                  isExpanded={expandedTx === tx.hash}
-                  onToggleExpand={() => toggleTxExpansion(tx.hash)}
-                />
-              ))}
-            </div>
-          </TabsContent>
-        </Tabs>
+            {/* Transactions tab */}
+            <TabsContent value="transactions" className="w-full">
+              <div className={gridClass}>
+                {mockTransactions.map((tx) => (
+                  <TransactionItem
+                    key={tx.hash}
+                    tx={tx}
+                    isExpanded={expandedTx === tx.hash}
+                    onToggleExpand={() => toggleTxExpansion(tx.hash)}
+                  />
+                ))}
+              </div>
+            </TabsContent>
+          </Tabs>
+        </div>
 
         {/* Additional information for desktop */}
         {isDesktop && (
@@ -652,8 +662,7 @@ export default function ExplorerPage() {
                   <div className="font-medium mb-1">Example:</div>
                   <div className="text-gray-300">
                     "0.1 UBI per minute" creates a continuous payment stream that recipients can withdraw from at any
-                    time.
-                  </div>
+                    time."
                 </div>
               </Card>
             </div>
@@ -663,4 +672,3 @@ export default function ExplorerPage() {
     </DesktopLayout>
   )
 }
-

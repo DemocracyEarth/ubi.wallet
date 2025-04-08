@@ -814,4 +814,3 @@ export default function WalletPage() {
     </DesktopLayout>
   )
 }
-

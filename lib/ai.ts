@@ -351,4 +351,3 @@ export async function generateContract(prompt: string): Promise<Contract> {
   };
 }
 */
-

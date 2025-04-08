@@ -233,4 +233,3 @@ export default function AIRequestCard({ request, mode }: AIRequestCardProps) {
     </Card>
   )
 }
-

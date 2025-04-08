@@ -47,4 +47,3 @@ export default function ScrollObserver({
 
   return <div ref={observerRef} className={className} />
 }
-

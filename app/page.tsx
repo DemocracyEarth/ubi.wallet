@@ -169,8 +169,8 @@ export default function Home() {
 
           <Card className="p-5 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl">
             <div className="flex justify-between items-start mb-1">
-              <h2 className="text-lg font-medium">AI Services</h2>
-              <Link href="/ai-services" className="text-xs bg-white/20 rounded-full px-2 py-1 flex items-center">
+              <h2 className="text-lg font-medium">Smart Contracts</h2>
+              <Link href="/contracts" className="text-xs bg-white/20 rounded-full px-2 py-1 flex items-center">
                 Open <ArrowRight className="ml-1 w-3 h-3" />
               </Link>
             </div>
@@ -179,7 +179,7 @@ export default function Home() {
             <div className="flex justify-between items-center text-sm">
               <div>
                 <div className="opacity-80">Earned Today</div>
-                <div className="font-medium">3 requests fulfilled</div>
+                <div className="font-medium">3 contracts deployed</div>
               </div>
               <div className="text-right">
                 <div className="opacity-80">Network Status</div>
@@ -242,13 +242,13 @@ export default function Home() {
             </Card>
           </Link>
 
-          <Link href="/ai-services">
+          <Link href="/contracts">
             <Card className="p-5 bg-gradient-to-r from-purple-600 to-pink-600 hover:opacity-90 transition-opacity h-full">
               <div className="flex items-center gap-2">
                 <FileText className="w-5 h-5" />
-                <span className="text-base font-bold">AI Services</span>
+                <span className="text-base font-bold">Smart Contracts</span>
               </div>
-              <p className="mt-1 text-sm opacity-80">Interact with decentralized AI</p>
+              <p className="mt-1 text-sm opacity-80">Create and deploy contracts</p>
             </Card>
           </Link>
 
@@ -266,4 +266,3 @@ export default function Home() {
     </DesktopLayout>
   )
 }
-

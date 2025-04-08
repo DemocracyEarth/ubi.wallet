@@ -24,4 +24,3 @@ export function verifySignature(message: string, signature: string, publicKey: s
 
   return nacl.sign.detached.verify(messageUint8, signatureUint8, publicKeyUint8)
 }
-

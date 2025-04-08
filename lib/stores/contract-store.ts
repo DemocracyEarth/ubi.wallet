@@ -34,4 +34,3 @@ export const useContractStore = create<ContractState>((set, get) => ({
     return get().contracts.find((contract) => contract.id === contractId)
   },
 }))
-

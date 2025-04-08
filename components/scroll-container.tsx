@@ -37,7 +37,7 @@ export default function ScrollContainer({ children, className, style, bottomPadd
     if (containerRef.current) {
       containerRef.current.scrollTo({
         top: 0,
-        behavior: "smooth",
+        behavior: "auto", // Changed from "smooth" to "auto" for immediate scrolling
       })
     }
   }
@@ -46,7 +46,7 @@ export default function ScrollContainer({ children, className, style, bottomPadd
     if (containerRef.current) {
       containerRef.current.scrollTo({
         top: containerRef.current.scrollHeight,
-        behavior: "smooth",
+        behavior: "auto", // Changed from "smooth" to "auto" for immediate scrolling
       })
     }
   }
@@ -88,4 +88,3 @@ export default function ScrollContainer({ children, className, style, bottomPadd
     </div>
   )
 }
-

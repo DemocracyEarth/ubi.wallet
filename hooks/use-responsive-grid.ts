@@ -64,4 +64,3 @@ export function useResponsiveGrid(breakpoints: { small: number; medium: number }
 
   return { containerRef, containerWidth, columns }
 }
-

@@ -46,6 +46,7 @@ export default function NodePage() {
   const [importError, setImportError] = useState<string | null>(null)
 
   const isDesktop = useMediaQuery("(min-width: 1024px)")
+  const isLargeScreen = useMediaQuery("(min-width: 1536px)")
 
   // Format private key for display
   const formatPrivateKey = () => {
@@ -176,13 +177,18 @@ export default function NodePage() {
     </div>
   )
 
+  // Determine grid columns based on screen size
+  const gridCols = isLargeScreen ? "grid-cols-3" : isDesktop ? "grid-cols-2" : "grid-cols-1"
+  const contentWidth = isDesktop && !rightPanelContent ? "w-full" : "w-full max-w-full"
+
   return (
     <DesktopLayout
       sidebar={isDesktop ? sidebarContent : undefined}
       rightPanel={rightPanelContent}
       showRightPanel={true}
+      contentClassName="w-full"
     >
-      <div className="max-w-full mx-auto">
+      <div className={`${contentWidth} mx-auto`}>
         <h1 className="text-2xl font-bold mb-4">Node Settings</h1>
 
         <Tabs defaultValue="node" className="w-full mb-6">
@@ -193,235 +199,284 @@ export default function NodePage() {
           </TabsList>
 
           <TabsContent value="node">
-            <Card className="w-full p-5 bg-gray-900/80 mb-4">
-              <div className="flex justify-between items-center mb-4">
-                <div className="flex items-center gap-2">
-                  <Server className="w-5 h-5 text-green-400" />
-                  <h2 className="text-lg font-medium">Light Node</h2>
+            <div className={`grid ${gridCols} gap-4 w-full`}>
+              <Card className="w-full p-5 bg-gray-900/80">
+                <div className="flex justify-between items-center mb-4">
+                  <div className="flex items-center gap-2">
+                    <Server className="w-5 h-5 text-green-400" />
+                    <h2 className="text-lg font-medium">Light Node</h2>
+                  </div>
+                  <Switch checked={lightNodeEnabled} onCheckedChange={setLightNodeEnabled} />
                 </div>
-                <Switch checked={lightNodeEnabled} onCheckedChange={setLightNodeEnabled} />
-              </div>
 
-              <p className="text-sm text-gray-400 mb-4">
-                Run a light node to contribute to the network while using minimal resources.
-              </p>
+                <p className="text-sm text-gray-400 mb-4">
+                  Run a light node to contribute to the network while using minimal resources.
+                </p>
 
-              <div className="bg-gray-800 p-3 rounded-lg text-sm">
-                <div className="flex justify-between mb-2">
-                  <span className="text-gray-400">Status:</span>
-                  <span className="text-green-400">Running</span>
+                <div className="bg-gray-800 p-3 rounded-lg text-sm">
+                  <div className="flex justify-between mb-2">
+                    <span className="text-gray-400">Status:</span>
+                    <span className="text-green-400">Running</span>
+                  </div>
+                  <div className="flex justify-between mb-2">
+                    <span className="text-gray-400">Peers:</span>
+                    <span>{peerCount}</span>
+                  </div>
+                  <div className="flex justify-between mb-2">
+                    <span className="text-gray-400">Sync:</span>
+                    <span>{syncProgress}%</span>
+                  </div>
+                  <div className="mt-2">
+                    <Progress value={syncProgress} className="h-1.5" />
+                  </div>
                 </div>
-                <div className="flex justify-between mb-2">
-                  <span className="text-gray-400">Peers:</span>
-                  <span>{peerCount}</span>
-                </div>
-                <div className="flex justify-between mb-2">
-                  <span className="text-gray-400">Sync:</span>
-                  <span>{syncProgress}%</span>
-                </div>
-                <div className="mt-2">
-                  <Progress value={syncProgress} className="h-1.5" />
-                </div>
-              </div>
-            </Card>
+              </Card>
 
-            <Card className="w-full p-5 bg-gray-900/80">
-              <div className="flex items-center gap-2 mb-4">
-                <Activity className="w-5 h-5 text-purple-400" />
-                <h2 className="text-lg font-medium">Network Stats</h2>
-              </div>
+              <Card className="w-full p-5 bg-gray-900/80">
+                <div className="flex items-center gap-2 mb-4">
+                  <Activity className="w-5 h-5 text-purple-400" />
+                  <h2 className="text-lg font-medium">Network Stats</h2>
+                </div>
 
-              <div className="space-y-3 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Network:</span>
-                  <span>ubi.eth Mainnet</span>
+                <div className="space-y-3 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Network:</span>
+                    <span>ubi.eth Mainnet</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Latest Block:</span>
+                    <span>#1,342,567</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">TPS:</span>
+                    <span>24.3</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Gas Price:</span>
+                    <span>12 gwei</span>
+                  </div>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Latest Block:</span>
-                  <span>#1,342,567</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">TPS:</span>
-                  <span>24.3</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Gas Price:</span>
-                  <span>12 gwei</span>
-                </div>
-              </div>
 
-              <Link href="/explorer">
-                <Button
-                  variant="outline"
-                  className="w-full mt-4 flex items-center justify-center gap-2 border-gray-700"
-                >
-                  Open Block Explorer <ExternalLink size={14} />
-                </Button>
-              </Link>
-            </Card>
+                <Link href="/explorer">
+                  <Button
+                    variant="outline"
+                    className="w-full mt-4 flex items-center justify-center gap-2 border-gray-700"
+                  >
+                    Open Block Explorer <ExternalLink size={14} />
+                  </Button>
+                </Link>
+              </Card>
+
+              {isLargeScreen && (
+                <Card className="w-full p-5 bg-gray-900/80">
+                  <div className="flex items-center gap-2 mb-4">
+                    <Server className="w-5 h-5 text-blue-400" />
+                    <h2 className="text-lg font-medium">Resource Usage</h2>
+                  </div>
+
+                  <div className="space-y-3 text-sm">
+                    <div>
+                      <div className="flex justify-between mb-1">
+                        <span className="text-gray-400">CPU:</span>
+                        <span>12%</span>
+                      </div>
+                      <Progress value={12} className="h-1.5" />
+                    </div>
+                    <div>
+                      <div className="flex justify-between mb-1">
+                        <span className="text-gray-400">Memory:</span>
+                        <span>256MB</span>
+                      </div>
+                      <Progress value={25} className="h-1.5" />
+                    </div>
+                    <div>
+                      <div className="flex justify-between mb-1">
+                        <span className="text-gray-400">Disk:</span>
+                        <span>1.2GB</span>
+                      </div>
+                      <Progress value={15} className="h-1.5" />
+                    </div>
+                    <div>
+                      <div className="flex justify-between mb-1">
+                        <span className="text-gray-400">Network:</span>
+                        <span>2.3 Mbps</span>
+                      </div>
+                      <Progress value={30} className="h-1.5" />
+                    </div>
+                  </div>
+                </Card>
+              )}
+            </div>
           </TabsContent>
 
           <TabsContent value="ai">
-            <AIConfigurationSettings />
-            <AINetworkManagement />
+            <div className={`grid ${gridCols} gap-4 w-full`}>
+              <div className={isLargeScreen ? "col-span-2" : "col-span-full"}>
+                <AIConfigurationSettings />
+              </div>
+              <div className="col-span-full">
+                <AINetworkManagement />
+              </div>
+            </div>
           </TabsContent>
 
           <TabsContent value="wallet">
-            <Card className="w-full p-5 bg-gray-900/80 mb-4">
-              <div className="flex items-center gap-2 mb-4">
-                <Key className="w-5 h-5 text-yellow-400" />
-                <h2 className="text-lg font-medium">Wallet Security</h2>
-              </div>
+            <div className={`grid ${gridCols} gap-4 w-full`}>
+              <Card className={`w-full p-5 bg-gray-900/80 ${isLargeScreen ? "col-span-2" : ""}`}>
+                <div className="flex items-center gap-2 mb-4">
+                  <Key className="w-5 h-5 text-yellow-400" />
+                  <h2 className="text-lg font-medium">Wallet Security</h2>
+                </div>
 
-              <div className="bg-yellow-900/20 border border-yellow-800/30 rounded-md p-3 mb-4 text-sm">
-                <div className="flex items-start gap-2">
-                  <AlertTriangle className="w-4 h-4 text-yellow-500 mt-0.5 flex-shrink-0" />
+                <div className="bg-yellow-900/20 border border-yellow-800/30 rounded-md p-3 mb-4 text-sm">
+                  <div className="flex items-start gap-2">
+                    <AlertTriangle className="w-4 h-4 text-yellow-500 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <p className="text-yellow-300 mb-1">Security Warning</p>
+                      <p className="text-gray-300">
+                        Your private key gives complete control over your wallet. Never share it with anyone and store
+                        it securely.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
                   <div>
-                    <p className="text-yellow-300 mb-1">Security Warning</p>
-                    <p className="text-gray-300">
-                      Your private key gives complete control over your wallet. Never share it with anyone and store it
-                      securely.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <div>
-                  <Label className="text-sm text-gray-400 mb-1 block">Public Address</Label>
-                  <div className="flex gap-2">
-                    <Input value={publicKey} readOnly className="bg-gray-800/50 border-gray-700 font-mono text-sm" />
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      className="border-gray-700"
-                      onClick={() => navigator.clipboard.writeText(publicKey)}
-                    >
-                      <Copy className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-
-                <div>
-                  <div className="flex justify-between items-center mb-1">
-                    <Label className="text-sm text-gray-400">Private Key</Label>
-                    <div className="flex items-center">
-                      <label className="text-xs text-gray-400 mr-2">
-                        <input
-                          type="checkbox"
-                          checked={securityCheck}
-                          onChange={(e) => setSecurityCheck(e.target.checked)}
-                          className="mr-1"
-                        />
-                        I understand the risks
-                      </label>
+                    <Label className="text-sm text-gray-400 mb-1 block">Public Address</Label>
+                    <div className="flex gap-2">
+                      <Input value={publicKey} readOnly className="bg-gray-800/50 border-gray-700 font-mono text-sm" />
                       <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-6 w-6 p-0"
-                        onClick={() => securityCheck && setShowPrivateKey(!showPrivateKey)}
-                        disabled={!securityCheck}
+                        variant="outline"
+                        size="icon"
+                        className="border-gray-700"
+                        onClick={() => navigator.clipboard.writeText(publicKey)}
                       >
-                        {showPrivateKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        <Copy className="h-4 w-4" />
                       </Button>
                     </div>
                   </div>
+
+                  <div>
+                    <div className="flex justify-between items-center mb-1">
+                      <Label className="text-sm text-gray-400">Private Key</Label>
+                      <div className="flex items-center">
+                        <label className="text-xs text-gray-400 mr-2">
+                          <input
+                            type="checkbox"
+                            checked={securityCheck}
+                            onChange={(e) => setSecurityCheck(e.target.checked)}
+                            className="mr-1"
+                          />
+                          I understand the risks
+                        </label>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-6 w-6 p-0"
+                          onClick={() => securityCheck && setShowPrivateKey(!showPrivateKey)}
+                          disabled={!securityCheck}
+                        >
+                          {showPrivateKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        </Button>
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <Input
+                        value={formatPrivateKey()}
+                        readOnly
+                        type={showPrivateKey ? "text" : "password"}
+                        className="bg-gray-800/50 border-gray-700 font-mono text-sm"
+                      />
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="border-gray-700"
+                        onClick={copyPrivateKey}
+                        disabled={!securityCheck}
+                      >
+                        <Copy className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    <p className="text-xs text-red-400 mt-1">
+                      {!securityCheck && "Check the box to view or copy your private key"}
+                    </p>
+                  </div>
+
                   <div className="flex gap-2">
-                    <Input
-                      value={formatPrivateKey()}
-                      readOnly
-                      type={showPrivateKey ? "text" : "password"}
-                      className="bg-gray-800/50 border-gray-700 font-mono text-sm"
-                    />
                     <Button
                       variant="outline"
-                      size="icon"
-                      className="border-gray-700"
-                      onClick={copyPrivateKey}
+                      className="flex-1 border-gray-700 flex items-center gap-1"
                       disabled={!securityCheck}
                     >
-                      <Copy className="h-4 w-4" />
+                      <Download className="w-4 h-4" />
+                      <span>Export Wallet</span>
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="flex-1 border-gray-700 flex items-center gap-1"
+                      onClick={() => {
+                        // Generate a new keypair
+                        const keyPair = generateKeyPair()
+                        initializeWallet(keyPair)
+                        alert("New wallet generated!")
+                      }}
+                    >
+                      <Key className="w-4 h-4" />
+                      <span>Generate New</span>
                     </Button>
                   </div>
-                  <p className="text-xs text-red-400 mt-1">
-                    {!securityCheck && "Check the box to view or copy your private key"}
-                  </p>
+                </div>
+              </Card>
+
+              <Card className="w-full p-5 bg-gray-900/80">
+                <div className="flex items-center gap-2 mb-4">
+                  <Upload className="w-5 h-5 text-blue-400" />
+                  <h2 className="text-lg font-medium">Import Existing Wallet</h2>
                 </div>
 
-                <div className="flex gap-2">
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="seed-phrase" className="mb-1 block">
+                      Private Key or Seed Phrase
+                    </Label>
+                    <Textarea
+                      id="seed-phrase"
+                      placeholder="Enter your private key or seed phrase"
+                      value={importSeed}
+                      onChange={(e) => setImportSeed(e.target.value)}
+                      className="bg-gray-800/50 border-gray-700 min-h-[80px]"
+                    />
+                    {importError && <p className="text-xs text-red-400 mt-1">{importError}</p>}
+                  </div>
+
+                  <div className="flex items-start gap-2">
+                    <input
+                      type="checkbox"
+                      id="security-warning"
+                      checked={securityWarningAcknowledged}
+                      onChange={(e) => setSecurityWarningAcknowledged(e.target.checked)}
+                      className="mt-1"
+                    />
+                    <Label htmlFor="security-warning" className="text-sm text-gray-400">
+                      I understand that importing a wallet will replace my current wallet and I have backed up my
+                      existing private key if needed.
+                    </Label>
+                  </div>
+
                   <Button
-                    variant="outline"
-                    className="flex-1 border-gray-700 flex items-center gap-1"
-                    disabled={!securityCheck}
+                    onClick={handleImportWallet}
+                    disabled={!importSeed.trim() || !securityWarningAcknowledged}
+                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600"
                   >
-                    <Download className="w-4 h-4" />
-                    <span>Export Wallet</span>
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="flex-1 border-gray-700 flex items-center gap-1"
-                    onClick={() => {
-                      // Generate a new keypair
-                      const keyPair = generateKeyPair()
-                      initializeWallet(keyPair)
-                      alert("New wallet generated!")
-                    }}
-                  >
-                    <Key className="w-4 h-4" />
-                    <span>Generate New</span>
+                    Import Wallet
                   </Button>
                 </div>
-              </div>
-            </Card>
-
-            <Card className="w-full p-5 bg-gray-900/80">
-              <div className="flex items-center gap-2 mb-4">
-                <Upload className="w-5 h-5 text-blue-400" />
-                <h2 className="text-lg font-medium">Import Existing Wallet</h2>
-              </div>
-
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="seed-phrase" className="mb-1 block">
-                    Private Key or Seed Phrase
-                  </Label>
-                  <Textarea
-                    id="seed-phrase"
-                    placeholder="Enter your private key or seed phrase"
-                    value={importSeed}
-                    onChange={(e) => setImportSeed(e.target.value)}
-                    className="bg-gray-800/50 border-gray-700 min-h-[80px]"
-                  />
-                  {importError && <p className="text-xs text-red-400 mt-1">{importError}</p>}
-                </div>
-
-                <div className="flex items-start gap-2">
-                  <input
-                    type="checkbox"
-                    id="security-warning"
-                    checked={securityWarningAcknowledged}
-                    onChange={(e) => setSecurityWarningAcknowledged(e.target.checked)}
-                    className="mt-1"
-                  />
-                  <Label htmlFor="security-warning" className="text-sm text-gray-400">
-                    I understand that importing a wallet will replace my current wallet and I have backed up my existing
-                    private key if needed.
-                  </Label>
-                </div>
-
-                <Button
-                  onClick={handleImportWallet}
-                  disabled={!importSeed.trim() || !securityWarningAcknowledged}
-                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600"
-                >
-                  Import Wallet
-                </Button>
-              </div>
-            </Card>
+              </Card>
+            </div>
           </TabsContent>
         </Tabs>
       </div>
     </DesktopLayout>
   )
 }
-

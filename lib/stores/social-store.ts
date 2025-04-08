@@ -403,4 +403,3 @@ export const useSocialStore = create<SocialState>((set, get) => ({
     console.log("Syncing with peers...")
   },
 }))
-

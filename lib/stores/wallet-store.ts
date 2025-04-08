@@ -20,4 +20,3 @@ export const useWalletStore = create<WalletState>((set) => ({
     }),
   updateBalance: (newBalance: number) => set({ balance: newBalance }),
 }))
-

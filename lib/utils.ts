@@ -32,3 +32,6 @@ export function formatDate(date: Date): string {
   }).format(date)
 }
 
+// Minimalistic box styling utility
+export const minimalBoxStyles =
+  "rounded-lg bg-card text-card-foreground " + "transition-colors duration-200 " + "shadow-sm"

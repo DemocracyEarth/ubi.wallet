@@ -23,6 +23,7 @@ import {
   LayoutPanelLeft,
   Maximize2,
   Minimize2,
+  Activity,
 } from "lucide-react"
 import { useMediaQuery } from "@/hooks/use-media-query"
 
@@ -63,6 +64,17 @@ export default function DesktopLayout({
     }
   }, [isDesktop])
 
+  // Dispatch initial sidebar state on component mount
+  useEffect(() => {
+    if (isDesktop) {
+      window.dispatchEvent(
+        new CustomEvent("sidebarStateChange", {
+          detail: { expanded: !sidebarCollapsed },
+        }),
+      )
+    }
+  }, [isDesktop, sidebarCollapsed])
+
   // Toggle fullscreen
   const toggleFullscreen = () => {
     if (!document.fullscreenElement) {
@@ -91,14 +103,16 @@ export default function DesktopLayout({
   }, [])
 
   const isActive = (path: string) => {
-    return pathname === path
+    return pathname === path || pathname.startsWith(path + "/")
   }
 
+  // Updated navigation items to use /contracts instead of /ai-services
   const navItems = [
     { path: "/", icon: Home, label: "Home" },
     { path: "/wallet", icon: Wallet, label: "Wallet" },
-    { path: "/ai-services", icon: FileText, label: "AI Services" },
+    { path: "/contracts", icon: FileText, label: "Contracts" },
     { path: "/feed", icon: Users, label: "Feed" },
+    { path: "/explorer", icon: Activity, label: "Explorer" },
     { path: "/node", icon: Settings, label: "Node" },
   ]
 
@@ -145,7 +159,7 @@ export default function DesktopLayout({
         {/* Sidebar - collapsible on desktop, drawer on mobile */}
         <aside
           className={cn(
-            "bg-gray-900/90 backdrop-blur-md border-r border-gray-800 flex flex-col z-10 transition-all duration-300",
+            "bg-gray-900/90 backdrop-blur-md border-r border-gray-800 flex flex-col z-10",
             isDesktop
               ? sidebarCollapsed
                 ? "w-16"
@@ -156,7 +170,7 @@ export default function DesktopLayout({
           )}
           style={{ width: isDesktop ? (sidebarCollapsed ? 64 : sidebarWidth) : mobileMenuOpen ? 256 : 0 }}
         >
-          {/* Sidebar content */}
+          {/* Sidebar content - streamlined to only include navigation links */}
           <div className="flex-1 overflow-y-auto py-4 px-3">
             <nav className="space-y-1">
               {navItems.map((item) => (
@@ -164,7 +178,7 @@ export default function DesktopLayout({
                   key={item.path}
                   href={item.path}
                   className={cn(
-                    "flex items-center gap-3 px-3 py-2 rounded-lg transition-colors",
+                    "flex items-center gap-3 px-3 py-2 rounded-lg",
                     isActive(item.path)
                       ? "bg-gradient-to-r from-blue-600/50 to-purple-600/50 text-white"
                       : "text-gray-400 hover:bg-gray-800 hover:text-white",
@@ -176,9 +190,6 @@ export default function DesktopLayout({
                 </Link>
               ))}
             </nav>
-
-            {/* Custom sidebar content if provided */}
-            {(!isDesktop || !sidebarCollapsed) && sidebar && <div className="mt-6">{sidebar}</div>}
           </div>
 
           {/* Collapse button - desktop only */}
@@ -187,7 +198,16 @@ export default function DesktopLayout({
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+                onClick={() => {
+                  const newState = !sidebarCollapsed
+                  setSidebarCollapsed(newState)
+                  // Dispatch custom event for sidebar state change
+                  window.dispatchEvent(
+                    new CustomEvent("sidebarStateChange", {
+                      detail: { expanded: !newState },
+                    }),
+                  )
+                }}
                 className="w-full flex items-center justify-center"
               >
                 {sidebarCollapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
@@ -199,10 +219,13 @@ export default function DesktopLayout({
         {/* Main content */}
         <main
           ref={mainRef}
-          className={cn("flex-1 overflow-y-auto", rightPanelVisible && isDesktop ? "mr-[320px]" : "", contentClassName)}
+          className={cn(
+            "flex-1 overflow-y-auto",
+            rightPanelVisible && isDesktop ? "w-[calc(100%-320px)]" : "w-full",
+            contentClassName,
+          )}
           style={{
-            marginRight: rightPanelVisible && isDesktop ? rightPanelWidth : 0,
-            paddingBottom: "90px", // Reduced padding to create a more balanced layout
+            paddingBottom: isDesktop ? "0" : "90px", // Only add padding for bottom nav on mobile
           }}
         >
           {/* Toggle right panel button */}
@@ -217,15 +240,15 @@ export default function DesktopLayout({
             </Button>
           )}
 
-          <div className="px-4 sm:px-6 md:px-8 py-4">{children}</div>
+          <div className="w-full px-4 sm:px-6 md:px-8 py-4">{children}</div>
         </main>
 
         {/* Right panel - desktop only */}
         {rightPanel && isDesktop && (
           <aside
             className={cn(
-              "bg-gray-900/90 backdrop-blur-md border-l border-gray-800 overflow-y-auto transition-all duration-300",
-              rightPanelVisible ? `w-[${rightPanelWidth}px]` : "w-0",
+              "bg-gray-900/90 backdrop-blur-md border-l border-gray-800 overflow-y-auto",
+              rightPanelVisible ? `w-[${rightPanelWidth}px]` : "hidden",
             )}
             style={{ width: rightPanelVisible ? rightPanelWidth : 0 }}
           >
@@ -233,26 +256,27 @@ export default function DesktopLayout({
           </aside>
         )}
 
-        {/* Bottom navigation - visible on all devices */}
-        <div className="fixed bottom-0 left-0 right-0 bg-gray-900/90 backdrop-blur-md border-t border-gray-800 z-40">
-          <div className="max-w-md mx-auto flex justify-around py-3">
-            {navItems.map((item) => (
-              <Link
-                key={item.path}
-                href={item.path}
-                className={cn(
-                  "p-2 rounded-full flex flex-col items-center",
-                  isActive(item.path) ? "text-white" : "text-gray-400",
-                )}
-              >
-                <item.icon className="w-6 h-6" />
-                <span className="text-xs mt-1">{item.label}</span>
-              </Link>
-            ))}
+        {/* Bottom navigation - ONLY visible on mobile, NEVER on desktop */}
+        {!isDesktop && (
+          <div className="fixed bottom-0 left-0 right-0 bg-gray-900/90 backdrop-blur-md border-t border-gray-800 z-40">
+            <div className="max-w-md mx-auto flex justify-around py-3">
+              {navItems.map((item) => (
+                <Link
+                  key={item.path}
+                  href={item.path}
+                  className={cn(
+                    "p-2 rounded-full flex flex-col items-center",
+                    isActive(item.path) ? "text-white" : "text-gray-400",
+                  )}
+                >
+                  <item.icon className="w-6 h-6" />
+                  <span className="text-xs mt-1">{item.label}</span>
+                </Link>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   )
 }
-
